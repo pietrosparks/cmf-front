@@ -78,7 +78,7 @@ class Home extends Component {
         if (err.response) {
           if (err.response.status === 401) {
             this.notifyError('Session Expired, Please Reauthenticate')
-            this.setState({ loading: false, user: null })
+            this.logout();
           }
         }
       })
