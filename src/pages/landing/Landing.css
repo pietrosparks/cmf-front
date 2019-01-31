@@ -1,0 +1,34 @@
+.pd-10{
+    padding: 0px 10px;
+}
+.pd-20{
+    padding: 0px 20px;
+}
+.pd-30{
+    padding: 0px 30px;
+}
+.pd-40{
+    padding: 0px 40px;
+}
+
+.pd-150{
+    padding: 0px 150px;
+}
+
+
+.navbar-item img {
+    max-height: 2.5rem !important
+}
+
+.my-card {
+    min-height: 250px !important;
+}
+.is-google, .is-google:hover {
+    background-color: #dd4b39;
+    border-color: transparent;
+    color: #fff;
+    
+}
+
+
+
