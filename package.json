@@ -42,7 +42,7 @@
     "preinstall": "npm install nodemon -g",
     "start": "nodemon ./bin/www",
     "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build",
-    "build": "node build/build.js"
+    "build": "react-scripts build"
   },
   "engines": {
     "node": "10.x",
