@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 
-export default (privacyPolicy = () => {
+const privacyPolicy = () => {
   return (
     <Fragment>
       <h1>Privacy Policy</h1>
@@ -235,4 +235,6 @@ export default (privacyPolicy = () => {
       </ul>
     </Fragment>
   )
-})
+}
+
+export default privacyPolicy;
