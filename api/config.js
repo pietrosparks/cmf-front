@@ -1,13 +1,12 @@
 const cors = require('cors')
 const path = require('path')
 const logger = require('morgan')
-const connect = require('connect')
 const passport = require('passport')
 const bodyParser = require('body-parser')
 const createError = require('http-errors')
+const session = require('express-session')
 const passportInit = require('./lib/passport.init')
 const history = require('connect-history-api-fallback')
-
 
 const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000', 'https://crunchmyfare.herokuapp.com']
 
@@ -44,20 +43,23 @@ module.exports = (app, express) => {
 
   const api = require('./routes/api')(express)
   app.use(cors(corsConfig), (req, res, next) => next())
-  api.use(history({verbose:true}))
   app.use(express.static(path.join(__dirname, '../build')))
   app.use(logger('dev'))
+  app.use(history({verbose:true}))
   app.use(express.json())
 
   app.use(passport.initialize())
   passportInit()
   app.use(express.urlencoded({ extended: false }))
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
-  app.use(connect.cookieParser());
+
   app.use(
-    connect.cookieSession({
+    session({
+      key: 'user_key',
       secret: process.env.SESSION_SECRET,
-      cookie: { 
+      resave: true,
+      saveUninitialized: true,
+      cookie: {
         expires: 600000
       }
     })
