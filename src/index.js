@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import Landing from './pages/landing/Landing';
 import Home from './pages/home/Home';
+import Privacy from './pages/privacy/Privacy'
 import * as serviceWorker from './serviceWorker'
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
@@ -12,6 +13,7 @@ const routing = (
       <div>
         <Route exact path="/" component={Landing} />
         <Route path="/home" component={Home} />
+        <Route path="/privacy" component={Privacy} />
       </div>
     </Router>
   )

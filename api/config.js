@@ -4,7 +4,7 @@ const logger = require('morgan')
 const passport = require('passport')
 const bodyParser = require('body-parser')
 const createError = require('http-errors')
-const session = require('express-session')
+const connect = require('connect')
 const passportInit = require('./lib/passport.init')
 
 const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000', 'https://crunchmyfare.herokuapp.com']
@@ -51,13 +51,11 @@ module.exports = (app, express) => {
   app.use(express.urlencoded({ extended: false }))
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
-  app.use(
-    session({
-      key: 'user_key',
+  app.use(connect.cookieSession({
       secret: process.env.SESSION_SECRET,
       resave: true,
       saveUninitialized: true,
-      cookie: {
+      cookie: { 
         expires: 600000
       }
     })
