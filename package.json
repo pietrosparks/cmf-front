@@ -2,6 +2,8 @@
   "name": "taxi-cruncher",
   "version": "0.1.0",
   "private": true,
+  "description": "A Fare Cruncher",
+  "author": "Idakwoji Theophilus <pietrosparks@gmail.com>",
   "dependencies": {
     "axios": "^0.18.0",
     "bulma": "^0.7.2",
@@ -41,6 +43,10 @@
     "start": "nodemon ./bin/www",
     "heroku-postbuild": "cd client && npm install && npm run build",
     "build": "node build/build.js"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
   },
   "eslintConfig": {
     "extends": "react-app"
