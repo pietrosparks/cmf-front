@@ -41,15 +41,12 @@
     "node": "nodemon ./bin/www",
     "preinstall": "npm install nodemon -g",
     "start": "nodemon ./bin/www",
-    "heroku-postbuild": "npm install && npm run build",
+    "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build",
     "build": "node build/build.js"
   },
   "engines": {
     "node": "10.x",
     "npm": "6.x"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",
