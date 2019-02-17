@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from 'react'
-import { API_URL } from '../../config'
 import Navbar from '../../components/Navbar'
 import { Redirect } from 'react-router-dom'
-import './Landing.css'
+import { API_URL } from '../../config'
 import io from 'socket.io-client'
+import './Landing.css'
+import axios from 'axios';
+
 
 class Landing extends Component {
   state = {
@@ -13,6 +15,7 @@ class Landing extends Component {
   }
 
   componentDidMount() {
+    axios.get('/wake-up');
     const socket = io(API_URL)
     this.setState({ socket })
 

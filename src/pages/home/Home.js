@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.min.css'
 import Navbar from '../../components/Navbar'
 import Loader from '../../components/Loading'
-import axios from 'axios'
 import { API_URL } from '../../config'
-import 'react-toastify/dist/ReactToastify.min.css'
+import axios from 'axios';
 import './Home.css'
 
 class Home extends Component {
