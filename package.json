@@ -38,7 +38,6 @@
   "scripts": {
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "node": "nodemon ./bin/www",
     "preinstall": "npm install nodemon -g",
     "start": "nodemon ./bin/www",
     "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build",
