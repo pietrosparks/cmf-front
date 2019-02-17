@@ -53,11 +53,10 @@ module.exports = (app, express) => {
   passportInit()
   app.use(express.urlencoded({ extended: false }))
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
-
-  app.use(connect.cookieSession({
+  app.use(connect.cookieParser());
+  app.use(
+    connect.cookieSession({
       secret: process.env.SESSION_SECRET,
-      resave: true,
-      saveUninitialized: true,
       cookie: { 
         expires: 600000
       }
