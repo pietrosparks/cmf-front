@@ -83,7 +83,7 @@ class mailController {
           q: `from: ${receiptProvider} after: ${date}`
         }
       })).data.messages
-
+      console.log(listedMessages, 'listed messages')
       if (listedMessages) {
         const openedMessages = await axios.all(
           listedMessages.map(m => {
