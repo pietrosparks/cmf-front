@@ -44,6 +44,10 @@
     "heroku-postbuild": "npm install && npm run build",
     "build": "node build/build.js"
   },
+  "engines": {
+    "node": "10.x",
+    "npm": "6.x"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },
