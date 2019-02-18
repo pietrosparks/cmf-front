@@ -10,6 +10,8 @@ const taxiServiceFetcher = taxiService => {
       : 'receipts-nigeria@taxify.eu'
 
   if (!receiptProvider) return new Error('No taxi service provided')
+
+  return receiptProvider
 }
 
 const datePeriodFetcher = date => {
