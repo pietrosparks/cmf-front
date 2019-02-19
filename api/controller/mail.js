@@ -51,11 +51,12 @@ const parseFunction = (messages, positive, negative, taxiService) => {
       negative: parseInt(negative).format(2, 3, ',', '.')
     }
   } else if (taxiService === 'taxify') {
-    console.log(messages, 'messages')
     messages.forEach(m => {
-      const cash = m.split(' ')[2].replace('₦', '')
-      console.log(m.split(' '), 'splitted')
-      console.log(cash, 'cash')
+      const splitCheck = m.split(' ')
+      let cash
+      if (splitCheck[1] === '****') cash = splitCheck[3].replace('₦', '')
+      else if (splitCheck[1] === 'Cash') cash = splitCheck[2].replace('₦', '')
+
       if (cash) negative += Number(cash)
     })
 
@@ -88,7 +89,6 @@ class mailController {
           q: `from: ${receiptProvider} after: ${date}`
         }
       })).data.messages
-      console.log(listedMessages, 'listed messages')
       if (listedMessages) {
         const openedMessages = await axios.all(
           listedMessages.map(m => {
@@ -103,7 +103,6 @@ class mailController {
             return m.links
           })
         )
-        console.log(openedMessages, 'opened messages')
         const bill = parseFunction(
           openedMessages,
           positive,
