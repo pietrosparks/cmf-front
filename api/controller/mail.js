@@ -51,8 +51,11 @@ const parseFunction = (messages, positive, negative, taxiService) => {
       negative: parseInt(negative).format(2, 3, ',', '.')
     }
   } else if (taxiService === 'taxify') {
+    console.log(messages, 'messages')
     messages.forEach(m => {
       const cash = m.split(' ')[2].replace('₦', '')
+      console.log(m.split(' '), 'splitted')
+      console.log(cash, 'cash')
       if (cash) negative += Number(cash)
     })
 
