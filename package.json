@@ -27,6 +27,7 @@
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
     "react": "^16.7.0",
+    "react-date-picker": "^7.2.0",
     "react-dom": "^16.7.0",
     "react-fontawesome": "^1.6.1",
     "react-loading": "^2.0.3",
@@ -37,6 +38,7 @@
     "socket.io-client": "^2.2.0"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "preinstall": "npm install nodemon -g",

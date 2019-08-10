@@ -14,6 +14,8 @@ class AuthController {
       token: encryptPayload(req.user.accessToken)
     }
 
+    console.log(user, user)
+
     io.in(req.session.socketId).emit('google', user)
   }
 }

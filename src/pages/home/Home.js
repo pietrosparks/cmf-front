@@ -3,22 +3,78 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
 import Navbar from '../../components/Navbar'
 import Loader from '../../components/Loading'
+import DatePicker from 'react-date-picker'
+import 'react-date-picker/dist/DatePicker.css'
 import { API_URL } from '../../config'
-import axios from 'axios';
+import axios from 'axios'
 import './Home.css'
+import moment from 'moment'
 
 class Home extends Component {
   state = {
     user: {},
-    taxiService: null,
-    datePeriod: null,
     step: 1,
+    position: null,
     result: null,
-    loading: false
+    loading: false,
+    datePeriod: null,
+    startDate: moment().format('DD/MM/YY'),
+    endDate: null,
+    showCustom: false,
+    taxiService: null,
+    handleChangeEnd: null,
+    handleChangeStart: null
   }
 
   componentDidMount() {
+    this.propmptForLocation()
     this.setState({ user: this.props.location.state.user })
+  }
+
+  handleChangeStart = date => {
+    this.setState({
+      startDate: date
+    })
+  }
+
+  propmptForLocation = () => {
+    navigator.geolocation.getCurrentPosition((position, err) => {
+      if (err) return
+      const { latitude, longitude } = position.coords
+      this.setState({ position: { longitude, latitude } })
+    })
+  }
+
+  handleChangeEnd = date => {
+    this.setState({
+      endDate: date
+    })
+  }
+
+  datePickerRender() {
+    if (this.state.showCustom) {
+      return (
+        <div className="pd-50">
+          <DatePicker
+            selected={this.state.startDate}
+            selectsStart
+            startDate={this.state.startDate}
+            endDate={this.state.endDate}
+            onChange={this.handleChangeStart}
+            placeholderText="Choose Starting Date"
+          />
+
+          <DatePicker
+            selected={this.state.endDate}
+            selectsEnd
+            startDate={this.state.startDate}
+            endDate={this.state.endDate}
+            onChange={this.handleChangeEnd}
+            placeholderText="Choose Ending Date"
+          />
+        </div>
+      )
+    } else return null
   }
 
   notifyError = message => {
@@ -36,25 +92,30 @@ class Home extends Component {
   }
   determineTime() {
     let period
-    if (this.state.datePeriod === 'past-week') {
+    if (this.state.datePeriod === 'this-week') {
       period = 'this week'
     }
-    if (this.state.datePeriod === 'past-month') {
+    if (this.state.datePeriod === 'this-month') {
       period = 'this month'
     }
-    if (this.state.datePeriod === 'past-year') {
+    if (this.state.datePeriod === 'this-year') {
       period = 'this Year'
     }
     return period
   }
 
   back() {
-    this.setState({ step: 1, result:null, taxiService: null, datePeriod: null })
+    this.setState({
+      step: 1,
+      result: null,
+      taxiService: null,
+      datePeriod: null
+    })
   }
 
   logout() {
-    this.setState({ user: {} });
-    this.props.history.push('/');
+    this.setState({ user: {} })
+    this.props.history.push('/')
   }
 
   crunch = () => {
@@ -63,7 +124,9 @@ class Home extends Component {
       .get(`${API_URL}/mail`, {
         params: {
           taxiService: this.state.taxiService,
-          datePeriod: this.state.datePeriod
+          datePeriod: this.state.datePeriod,
+          longitude: this.state.position.longitude,
+          latitude:this.state.position.latitude
         },
         headers: {
           Authorization: this.state.user.token
@@ -71,14 +134,13 @@ class Home extends Component {
         withCredentials: true
       })
       .then(res => {
-        console.log(res, 'respo')
         this.setState({ loading: false, result: res.data.data })
       })
       .catch(err => {
         if (err.response) {
           if (err.response.status === 401) {
             this.notifyError('Session Expired, Please Reauthenticate')
-            this.logout();
+            this.logout()
           }
         }
       })
@@ -92,27 +154,30 @@ class Home extends Component {
       this.crunch()
     })
   }
+  toggleShowCustom() {
+    this.setState({ showCustom: !this.showCustom })
+  }
   render() {
     return (
       <Fragment>
-        <Navbar />
-        <section class="section">
-          <div class="container">
-            <div class="columns">
+         <Navbar user={this.props.location.state.user} history={this.props.history} />
+        <section className="section">
+          <div className="container">
+            <div className="columns">
               {!this.state.loading ? (
                 <Fragment>
                   {!this.state.result ? (
-                    <div class="column card is-half is-offset-one-quarter">
-                      <figure class="image is-128x128 has-image-centered">
+                    <div className="column card is-half is-offset-one-quarter">
+                      <figure className="image is-128x128 has-image-centered">
                         <img
-                          class="is-rounded"
+                          className="is-rounded"
                           src={this.state.user.photo}
                           alt="avatar"
                         />
                       </figure>
                       <hr />
-                      <div class="has-text-centered">
-                        <h4 class="is-size-4 has-text-info">
+                      <div className="has-text-centered">
+                        <h4 className="is-size-4 has-text-info">
                           Welcome {this.state.user.name}
                         </h4>
 
@@ -120,18 +185,18 @@ class Home extends Component {
                         {this.state.step === 1 ? (
                           <Fragment>
                             {' '}
-                            <div class="pd-50">
-                              <h5 class="is-size-5">
+                            <div className="pd-50">
+                              <h5 className="is-size-5">
                                 Select your Taxi service to be calculated
                               </h5>
                               <button
-                                class="button mglr-50 is-medium is-fullwidth is-uber"
+                                className="button mglr-50 is-medium is-fullwidth is-uber"
                                 onClick={e => this.selectTaxiService('uber')}
                               >
                                 Uber
                               </button>
                               <button
-                                class="button mglr-50 is-medium is-fullwidth is-success"
+                                className="button mglr-50 is-medium is-fullwidth is-success"
                                 onClick={e => this.selectTaxiService('taxify')}
                               >
                                 Taxify
@@ -141,49 +206,57 @@ class Home extends Component {
                         ) : (
                           <Fragment>
                             {' '}
-                            <div class="pd-50">
-                              <h5 class="is-size-5">Select Date Period</h5>
+                            <div className="pd-50">
+                              <h5 className="is-size-5">Select Date Period</h5>
                               <button
-                                class="button mglr-50 is-medium is-fullwidth is-info"
-                                onClick={e => this.selectPeriod('past-week')}
+                                className="button mglr-50 is-medium is-fullwidth is-info"
+                                onClick={e => this.selectPeriod('this-week')}
                               >
-                                Past Week
+                                This Week
                               </button>
                               <button
-                                class="button mglr-50 is-medium is-fullwidth is-info"
-                                onClick={e => this.selectPeriod('past-month')}
+                                className="button mglr-50 is-medium is-fullwidth is-info"
+                                onClick={e => this.selectPeriod('this-month')}
                               >
-                                Past Month
+                                This Month
                               </button>
                               <button
-                                class="button mglr-50 is-medium is-fullwidth is-info"
-                                onClick={e => this.selectPeriod('past-year')}
+                                className="button mglr-50 is-medium is-fullwidth is-info"
+                                onClick={e => this.selectPeriod('this-year')}
                               >
-                                Past Year
+                                This Year
                               </button>
+                              <button
+                                className="button mglr-50 is-medium is-fullwidth is-info"
+                                onClick={e => this.toggleShowCustom()}
+                              >
+                                Custom Date Period
+                              </button>
+
+                              {this.datePickerRender()}
                             </div>
                           </Fragment>
                         )}
                       </div>
                     </div>
                   ) : (
-                    <div class="column card is-half is-offset-one-quarter">
-                      <figure class="image is-128x128 has-image-centered">
+                    <div className="column card is-half is-offset-one-quarter">
+                      <figure className="image is-128x128 has-image-centered">
                         <img
-                          class="is-rounded"
+                          className="is-rounded"
                           src={this.state.user.photo}
                           alt="avatar"
                         />
                       </figure>
                       <hr />
 
-                      <div class="notification is-info">
-                        <div class=" pdlr-50 has-text-centered">
-                          <h4 class="is-size-5 has-text-white">
+                      <div className="notification is-info">
+                        <div className=" pdlr-50 has-text-centered">
+                          <h4 className="is-size-5 has-text-white">
                             You successfully spent
                           </h4>
                           <hr />
-                          <h3 class="is-size-3 has-text-weight-bold">
+                          <h3 className="is-size-3 has-text-weight-bold">
                             NGN {this.state.result.negative}{' '}
                             <span role="img" aria-label="emoji">
                               💸{' '}
@@ -191,7 +264,7 @@ class Home extends Component {
                           </h3>
 
                           <hr />
-                          <h4 class="is-size-5 has-text-white">
+                          <h4 className="is-size-5 has-text-white">
                             on{' '}
                             {this.state.taxiService === 'uber'
                               ? 'Uber'
@@ -203,7 +276,7 @@ class Home extends Component {
                           </h4>
 
                           <br />
-                          <button class="button is-info is-medium is-fullwidth is-inverted">
+                          <button className="button is-info is-medium is-fullwidth is-inverted">
                             Tweet It{' '}
                             <span role="img" aria-label="emoji">
                               ✨
@@ -211,7 +284,7 @@ class Home extends Component {
                           </button>
                           <br />
                           <button
-                            class="button is-danger is-medium is-fullwidth is-inverted"
+                            className="button is-danger is-medium is-fullwidth is-inverted"
                             onClick={e => this.back()}
                           >
                             Back{' '}
@@ -221,7 +294,7 @@ class Home extends Component {
                           </button>
                           <br />
                           <button
-                            class="button is-danger is-medium is-fullwidth"
+                            className="button is-danger is-medium is-fullwidth"
                             onClick={e => this.logout()}
                           >
                             Bye{' '}

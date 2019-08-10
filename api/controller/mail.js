@@ -16,15 +16,15 @@ const taxiServiceFetcher = taxiService => {
 
 const datePeriodFetcher = date => {
   let specifiedDate
-  if (date === 'past-week') {
+  if (date === 'this-week') {
     specifiedDate = moment()
       .startOf('week')
       .format('YYYY/MM/DD')
-  } else if (date === 'past-month') {
+  } else if (date === 'this-month') {
     specifiedDate = moment()
       .startOf('month')
       .format('YYYY/MM/DD')
-  } else if (date === 'past-year') {
+  } else if (date === 'this-year') {
     specifiedDate = moment()
       .startOf('year')
       .format('YYYY/MM/DD')
