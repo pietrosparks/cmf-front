@@ -9,6 +9,7 @@ import { API_URL } from '../../config'
 import axios from 'axios'
 import './Home.css'
 import moment from 'moment'
+import { isEmpty } from 'lodash'
 
 class Home extends Component {
   state = {
@@ -120,14 +121,20 @@ class Home extends Component {
 
   crunch = () => {
     this.setState({ loading: true })
+
+    const params = {
+      taxiService: this.state.taxiService,
+      datePeriod: this.state.datePeriod
+    }
+
+    if (!isEmpty) {
+      params.longitude = this.state.position.longitude
+      params.latitude = this.state.position.latitude
+    }
+
     axios
       .get(`${API_URL}/mail`, {
-        params: {
-          taxiService: this.state.taxiService,
-          datePeriod: this.state.datePeriod,
-          longitude: this.state.position.longitude,
-          latitude:this.state.position.latitude
-        },
+        params,
         headers: {
           Authorization: this.state.user.token
         },
@@ -157,10 +164,39 @@ class Home extends Component {
   toggleShowCustom() {
     this.setState({ showCustom: !this.showCustom })
   }
+
+  tweetLink() {
+    let period
+
+    switch (this.state.datePeriod) {
+      case 'this-week':
+        period = 'This week'
+        break
+      case 'this-month':
+        period = 'This Month'
+        break
+      case 'this-year':
+        period = 'This Year'
+        break
+      default:
+        period = 'This Week'
+    }
+
+    const message = `Someone Safe me pls, I've spent ${
+      this.state.result.negative
+    } on ${
+      this.state.taxiService
+    } ${period} - Check yours and cry with me on https://crunchmyfare.herokuapp.com`
+    return `http://twitter.com/home/?status=${message}`
+  }
+
   render() {
     return (
       <Fragment>
-         <Navbar user={this.props.location.state.user} history={this.props.history} />
+        <Navbar
+          user={this.props.location.state.user}
+          history={this.props.history}
+        />
         <section className="section">
           <div className="container">
             <div className="columns">
@@ -226,12 +262,12 @@ class Home extends Component {
                               >
                                 This Year
                               </button>
-                              <button
+                              {/* <button
                                 className="button mglr-50 is-medium is-fullwidth is-info"
                                 onClick={e => this.toggleShowCustom()}
                               >
                                 Custom Date Period
-                              </button>
+                              </button> */}
 
                               {this.datePickerRender()}
                             </div>
@@ -276,12 +312,16 @@ class Home extends Component {
                           </h4>
 
                           <br />
-                          <button className="button is-info is-medium is-fullwidth is-inverted">
+                          <a
+                            className="button is-info is-medium is-fullwidth is-inverted"
+                            href={this.tweetLink()}
+                            target="_blank"
+                          >
                             Tweet It{' '}
                             <span role="img" aria-label="emoji">
                               ✨
                             </span>{' '}
-                          </button>
+                          </a>
                           <br />
                           <button
                             className="button is-danger is-medium is-fullwidth is-inverted"
