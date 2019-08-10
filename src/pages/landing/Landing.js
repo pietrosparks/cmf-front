@@ -15,7 +15,7 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.state.user) {
+    if (this.props.location.state && this.props.location.state.user) {
       const { user } = this.props.location.state
       this.setState({ user })
     }
