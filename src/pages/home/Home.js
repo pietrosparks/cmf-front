@@ -187,7 +187,7 @@ class Home extends Component {
     } on ${
       this.state.taxiService
     } ${period} - Check yours and cry with me on https://crunchmyfare.herokuapp.com`
-    return `http://twitter.com/home/?status=${message}`
+    return `http://twitter.com/intent/tweet?text=${message}`
   }
 
   render() {
