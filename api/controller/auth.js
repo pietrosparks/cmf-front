@@ -1,10 +1,13 @@
 const { encryptPayload } = require('../utils')
 
 class AuthController {
+  wake(req, res) {
+    return res.send('Waking-up')
+  }
   google(req, res) {
-    const io = req.app.get('io');
+    const io = req.app.get('io')
 
-    const { displayName: name, photos, id } = req.user.profile;
+    const { displayName: name, photos, id } = req.user.profile
 
     const user = {
       id,

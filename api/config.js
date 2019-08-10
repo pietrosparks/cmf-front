@@ -6,7 +6,7 @@ const session = require('express-session')
 const passport = require('passport')
 const passportInit = require('./lib/passport.init')
 
-const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000']
+const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000', 'https://crunchmyfare.herokuapp.com']
 
 const corsConfig = (req, next) => {
   let corsOptions
