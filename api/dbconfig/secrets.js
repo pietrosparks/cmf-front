@@ -14,7 +14,7 @@ if (process.env.NODE_ENV == 'production') {
 let GOOGLE_CONFIG = {
   clientID: process.env.GOOGLE_CLIENT,
   clientSecret: process.env.GOOGLE_SECRET,
-  callbackURL: `${BASEURL}/google/callback`
+  callbackURL: process.env.CALLBACK_URL
 }
 
 module.exports = {
@@ -22,5 +22,6 @@ module.exports = {
   BASEURL,
   GOOGLE_CONFIG,
   JWT_SECRET: process.env.JWT_SECRET,
-  FETCH_MAIL_URL: process.env.FETCH_MAIL_URL
+  FETCH_MAIL_URL: process.env.FETCH_MAIL_URL, 
+  GEO_USERNAME: process.env.GEO_USERNAME,
 }

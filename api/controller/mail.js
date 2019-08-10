@@ -1,15 +1,19 @@
 const axios = require('axios')
 const moment = require('moment')
 const { response, responseError } = require('../utils')
-const { FETCH_MAIL_URL } = require('../dbconfig/secrets')
+const { FETCH_MAIL_URL, GEO_USERNAME } = require('../dbconfig/secrets')
 
-const taxiServiceFetcher = taxiService => {
-  let receiptProvider =
-    taxiService === 'uber'
-      ? 'uber.nigeria@uber.com'
-      : 'receipts-nigeria@taxify.eu'
+const taxiServiceFetcher = (taxiService, countryName = 'nigeria') => {
+  let receiptProvider
 
-  if (!receiptProvider) return new Error('No taxi service provided')
+  if (taxiService === 'uber') {
+    receiptProvider = [`uber.${countryName.toLowerCase()}@uber.com`, '']
+  } else if (taxiService === 'taxify') {
+    receiptProvider = [
+      `receipts-${countryName.toLowerCase()}@taxify.eu`,
+      `receipts-${countryName.toLowerCase()}@bolt.eu`
+    ]
+  } else return new Error('No taxi service provided')
 
   return receiptProvider
 }
@@ -33,6 +37,7 @@ const datePeriodFetcher = date => {
   return specifiedDate
 }
 
+// To-do change the currency match to accomodate other currencies
 const parseFunction = (messages, positive, negative, taxiService) => {
   if (taxiService === 'uber') {
     messages.forEach(m => {
@@ -52,11 +57,7 @@ const parseFunction = (messages, positive, negative, taxiService) => {
     }
   } else if (taxiService === 'taxify') {
     messages.forEach(m => {
-      const splitCheck = m.split(' ')
-      let cash
-      if (splitCheck[1] === '****') cash = splitCheck[3].replace('₦', '')
-      else if (splitCheck[1] === 'Cash') cash = splitCheck[2].replace('₦', '')
-
+      const cash = m.split(' ')[2].replace('₦', '')
       if (cash) negative += Number(cash)
     })
 
@@ -69,11 +70,7 @@ const parseFunction = (messages, positive, negative, taxiService) => {
 
 class mailController {
   async list(req, res) {
-    const { taxiService, datePeriod } = req.query
-
-    let receiptProvider = taxiServiceFetcher(taxiService)
-    let date = datePeriodFetcher(datePeriod)
-
+    const { taxiService, datePeriod, latitude, longitude } = req.query
     const positive = 0
     const negative = 0
     const options = {
@@ -82,33 +79,35 @@ class mailController {
       }
     }
 
+    let storeCountryName
+    let receiptProvider
+    let date
+
+    if (latitude && longitude) {
+      try {
+        const url = `http://api.geonames.org/countryCodeJSON?lat=${latitude}&lng=${longitude}&username=${GEO_USERNAME}`
+        const { countryName } = (await axios.get(url)).data
+        storeCountryName = countryName
+      } catch (err) {
+        console.log('an error occured >>>', err)
+      }
+    }
+
+    receiptProvider = taxiServiceFetcher(taxiService, storeCountryName)
+    date = datePeriodFetcher(datePeriod)
+
     try {
       const listedMessages = (await axios.get(`${FETCH_MAIL_URL}`, {
         ...options,
         params: {
-          q: `from: ${receiptProvider} after: ${date}`
+          q: `from: (${receiptProvider[0]} OR ${
+            receiptProvider[1]
+          } ) after: ${date}`
         }
       })).data.messages
-      if (listedMessages) {
-        const openedMessages = await axios.all(
-          listedMessages.map(m => {
-            m.links = axios
-              .get(`${FETCH_MAIL_URL}/${m.id}`, {
-                ...options,
-                params: {
-                  format: 'full'
-                }
-              })
-              .then(resp => resp.data.snippet)
-            return m.links
-          })
-        )
-        const bill = parseFunction(
-          openedMessages,
-          positive,
-          negative,
-          taxiService
-        )
+
+      if (!listedMessages) {
+        const bill = { positive, negative: 0 }
 
         return response(
           200,
@@ -117,15 +116,36 @@ class mailController {
           'Taxi Fare Successfully Crunched',
           bill
         )
-      } else {
-        return response(
-          200,
-          'Success',
-          res,
-          'No Fares found in this time period',
-          { positive: 0, negative: 0 }
-        )
       }
+
+      const openedMessages = await axios.all(
+        listedMessages.map(m => {
+          m.links = axios
+            .get(`${FETCH_MAIL_URL}/${m.id}`, {
+              ...options,
+              params: {
+                format: 'full'
+              }
+            })
+            .then(resp => resp.data.snippet)
+          return m.links
+        })
+      )
+
+      const bill = parseFunction(
+        openedMessages,
+        positive,
+        negative,
+        taxiService
+      )
+
+      return response(
+        200,
+        'Success',
+        res,
+        'Taxi Fare Successfully Crunched',
+        bill
+      )
     } catch (err) {
       console.log(err, 'error')
       return responseError(err, res, 'Error while crunching your fares')

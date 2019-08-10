@@ -7,7 +7,6 @@ module.exports = api => {
     scope: ['profile', 'https://www.googleapis.com/auth/gmail.readonly']
   })
 
-  api.get('/wake-up', AuthController.wake);
   api.get('/google', addSocketIdtoSession, googleAuth)
   api.get('/google/callback', googleAuth, AuthController.google)
 }

@@ -30,6 +30,7 @@ class Navbar extends Component {
                     className="button is-white is-outlined"
                     href="https://github.com/pietrosparks/cmf-front"
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <span className="icon">
                       <i className="fa fa-github" />
@@ -40,7 +41,9 @@ class Navbar extends Component {
                 <span className="navbar-item">
                   <a
                     className="button is-white is-outlined"
-                    href="https://twitter.com/txheo" target="_blank"
+                    href="https://twitter.com/txheo"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <span className="icon">
                       <i className="fa fa-twitter" />

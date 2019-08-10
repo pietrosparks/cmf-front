@@ -1,13 +1,12 @@
-const cors = require('cors')
-const path = require('path')
-const logger = require('morgan')
-const passport = require('passport')
 const bodyParser = require('body-parser')
+const logger = require('morgan')
+const cors = require('cors')
 const createError = require('http-errors')
 const session = require('express-session')
+const passport = require('passport')
 const passportInit = require('./lib/passport.init')
 
-const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000', 'https://crunchmyfare.herokuapp.com']
+const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000']
 
 const corsConfig = (req, next) => {
   let corsOptions
@@ -29,7 +28,6 @@ const corsConfig = (req, next) => {
 }
 
 module.exports = (app, express) => {
-
   Number.prototype.format = function(n, x, s, c) {
     var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
       num = this.toFixed(Math.max(0, ~~n))
@@ -42,7 +40,7 @@ module.exports = (app, express) => {
 
   const api = require('./routes/api')(express)
   app.use(cors(corsConfig), (req, res, next) => next())
-  app.use(express.static(path.join(__dirname, '../build')))
+
   app.use(logger('dev'))
   app.use(express.json())
 

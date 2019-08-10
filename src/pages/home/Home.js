@@ -315,7 +315,7 @@ class Home extends Component {
                           <a
                             className="button is-info is-medium is-fullwidth is-inverted"
                             href={this.tweetLink()}
-                            target="_blank"
+                            target="_blank" rel="noopener noreferrer"
                           >
                             Tweet It{' '}
                             <span role="img" aria-label="emoji">
