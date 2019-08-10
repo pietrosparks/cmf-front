@@ -29,11 +29,23 @@ class Navbar extends Component {
                   <a
                     className="button is-white is-outlined"
                     href="https://github.com/pietrosparks/cmf-front"
+                    target="_blank"
                   >
                     <span className="icon">
                       <i className="fa fa-github" />
                     </span>
                     <span title="Hello from the other side">View Source</span>
+                  </a>
+                </span>
+                <span className="navbar-item">
+                  <a
+                    className="button is-white is-outlined"
+                    href="https://twitter.com/txheo" target="_blank"
+                  >
+                    <span className="icon">
+                      <i className="fa fa-twitter" />
+                    </span>
+                    <span title="Hello from the other side">Twitter</span>
                   </a>
                 </span>
               </div>
