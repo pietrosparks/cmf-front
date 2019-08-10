@@ -127,7 +127,7 @@ class Home extends Component {
       datePeriod: this.state.datePeriod
     }
 
-    if (!isEmpty) {
+    if (!isEmpty(this.state.position)) {
       params.longitude = this.state.position.longitude
       params.latitude = this.state.position.latitude
     }
