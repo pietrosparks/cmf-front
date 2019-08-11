@@ -2,6 +2,7 @@ const bodyParser = require('body-parser')
 const logger = require('morgan')
 const cors = require('cors')
 const createError = require('http-errors')
+const session = require('express-session')
 const passport = require('passport')
 const passportInit = require('./lib/passport.init')
 const path = require('path');
