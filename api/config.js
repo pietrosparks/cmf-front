@@ -39,7 +39,6 @@ module.exports = (app, express) => {
 
   const api = require('./routes/api')(express)
   app.use(cors(corsConfig), (req, res, next) => next())
-  app.use(express.static(path.join(__dirname, '../build')))
 
   app.use(logger('dev'))
   app.use(express.json())
