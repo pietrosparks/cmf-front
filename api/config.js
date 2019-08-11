@@ -7,7 +7,7 @@ const passport = require('passport')
 const passportInit = require('./lib/passport.init')
 const path = require('path');
 
-const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000', 'https://crunchmyfare.herokuapp.com']
+const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000', 'https://crunchmyfare.herokuapp.com'];
 
 const corsConfig = (req, next) => {
   let corsOptions
