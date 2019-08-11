@@ -8,8 +8,6 @@ mongoose.connect(
   { useNewUrlParser: true }
 )
 
-console.log(secrets, 'secrets');
-
 module.exports = {
   connect() {
     dbConnection.on('error', console.error.bind(console.error))

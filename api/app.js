@@ -4,7 +4,7 @@ const { connect } = require('./dbconfig/database')
 
 require('dotenv').load()
 require('./config')(app, express)
-connect()
+// connect()
 
 // view engine setup
 
