@@ -2,7 +2,6 @@ const bodyParser = require('body-parser')
 const logger = require('morgan')
 const cors = require('cors')
 const createError = require('http-errors')
-const session = require('express-session')
 const passport = require('passport')
 const passportInit = require('./lib/passport.init')
 
@@ -40,6 +39,7 @@ module.exports = (app, express) => {
 
   const api = require('./routes/api')(express)
   app.use(cors(corsConfig), (req, res, next) => next())
+  app.use(express.static(path.join(__dirname, '../build')))
 
   app.use(logger('dev'))
   app.use(express.json())
@@ -48,18 +48,6 @@ module.exports = (app, express) => {
   passportInit()
   app.use(express.urlencoded({ extended: false }))
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
-
-  app.use(
-    session({
-      key: 'user_key',
-      secret: process.env.SESSION_SECRET,
-      resave: true,
-      saveUninitialized: true,
-      cookie: {
-        expires: 600000
-      }
-    })
-  )
 
   app.use('/', api)
 
