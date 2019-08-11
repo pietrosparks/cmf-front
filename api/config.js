@@ -51,6 +51,18 @@ module.exports = (app, express) => {
   app.use(express.urlencoded({ extended: false }))
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
+  app.use(
+    session({
+      key: 'user_key',
+      secret: process.env.SESSION_SECRET,
+      resave: true,
+      saveUninitialized: true,
+      cookie: {
+        expires: 600000
+      }
+    })
+  )
+
   app.use('/', api)
 
   // catch 404 and forward to error handler
