@@ -4,6 +4,7 @@ const cors = require('cors')
 const createError = require('http-errors')
 const passport = require('passport')
 const passportInit = require('./lib/passport.init')
+const path = require('path');
 
 const incomingOriginWhitelist = ['http://localhost:3000', 'localhost:3000', 'https://crunchmyfare.herokuapp.com']
 
@@ -42,11 +43,13 @@ module.exports = (app, express) => {
 
   app.use(logger('dev'))
   app.use(express.json())
+  app.use(express.static(path.join(__dirname, '../build')))
 
   app.use(passport.initialize())
   passportInit()
   app.use(express.urlencoded({ extended: false }))
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+    app.use(express.static(path.join(__dirname, '../build')))
 
   app.use('/', api)
 
